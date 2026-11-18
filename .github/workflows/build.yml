@@ -1,3 +1,15 @@
+# Optimized by ci-cost (https://github.com/mariotavarez/ci-cost)
+# Applied 8 optimizations:
+# - [HIGH] Add cargo dependency cache to "build" job
+# - [HIGH] Add cargo dependency cache to "build-ubuntu-arm64" job
+# - [HIGH] Add cargo dependency cache to "build-windows-arm64" job
+# - [MEDIUM] Add concurrency group to "build.yml"
+# - [MEDIUM] Switch "build-windows-arm64" from Windows to ubuntu runner
+# - [MEDIUM] Switch "build-windows-7" from Windows to ubuntu runner
+# - [MEDIUM] 5 jobs clone the repo — consider artifact sharing
+# - [LOW] Explicitly set fail-fast for large matrix job "build" (48 combinations)
+# Estimated savings: ~29 min/run
+#
 name: build librashader-capi
 
 on:
@@ -8,6 +20,10 @@ on:
     branches: ["master"]
   schedule:
     - cron: "0 0 * * 6"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 env:
   CARGO_TERM_COLOR: always
 
